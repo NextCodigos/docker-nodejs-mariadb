@@ -1,0 +1,108 @@
+npm init -y
+
+npm i express mariadb
+
+//////////////////////////////
+
+Iniciar contenedor mariadb:
+docker run -p 3307:3306 -d --name mariadb -e MYSQL_ROOT_PASSWORD=mypassword mariadb:10.4
+
+
+  ~/De/h/r/Retos/docker-nodejs-mariadb ❯ took  46s docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS                                         NAMES
+f7bcdfbfa775   mariadb:10.4   "docker-entrypoint.s…"   50 seconds ago   Up 50 seconds   0.0.0.0:3307->3306/tcp, [::]:3307->3306/tcp   mariadb
+
+////////////////////////////////////////////////////
+
+  ~/De/h/r/R/docker-nodejs-mariadb ❯ 
+
+PARA ENTRAR a mysql de contenedor una vz iniciado:
+
+  ~/De/h/r/R/docker-nodejs-mariadb ❯ took  20s docker exec -it mariadb bash
+
+root@f7bcdfbfa775:/# 
+
+O:
+  ~/De/h/r/R/docker-nodejs-mariadb ❯ took  5s docker exec -it mariadb mysql -u root -p
+
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 10
+Server version: 10.4.34-MariaDB-1:10.4.34+maria~ubu2004 mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]:
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
++--------------------+
+3 rows in set (0.007 sec)
+
+MariaDB [(none)]> 
+
+
+MariaDB [(none)]> USE mydatabase;
+Database changed
+MariaDB [mydatabase]> SELECT DATAABASE;
+ERROR 1054 (42S22): Unknown column 'DATAABASE' in 'field list'
+MariaDB [mydatabase]> SELECT DATABASE;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1
+MariaDB [mydatabase]> SELECT DATABASE();
++------------+
+| DATABASE() |
++------------+
+| mydatabase |
++------------+
+1 row in set (0.000 sec)
+
+MariaDB [mydatabase]> CREATE TABLE products(name VAECHAR(100));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '(100))' at line 1
+MariaDB [mydatabase]> CREATE TABLE products(name VARCHAR(100));
+Query OK, 0 rows affected (0.035 sec)
+
+MariaDB [mydatabase]> DESCRIBE product;
+ERROR 1146 (42S02): Table 'mydatabase.product' doesn't exist
+MariaDB [mydatabase]> DESCRIBE products;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| name  | varchar(100) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+1 row in set (0.002 sec)
+
+INSERTAMOS PRODUCTOS:
+INSERT INTO products(name) VALUES ('product 1', 'product 2', 'product 3');
+
+
+
+SELECT * FROM products;
++-----------+
+| name      |
++-----------+
+| product 1 |
+| product 2 |
+| product 3 |
++-----------+
+3 rows in set (0.000 sec)
+
+
+////////////////////////////////////
+
+con thunder client:
+GET
+http://localhost:3000/products
+
+POST
+http://localhost:3000/newproducts
+
+En web veo productos:
+http://localhost:3000/products
+
