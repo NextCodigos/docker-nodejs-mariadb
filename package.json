@@ -11,6 +11,6 @@
   "description": "",
   "dependencies": {
     "express": "^4.21.0",
-    "mariadb": "^3.3.2"
+    "mariadb": "^3.4.2"
   }
 }
